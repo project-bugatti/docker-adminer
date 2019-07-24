@@ -30,6 +30,7 @@ COPY	*.php /var/www/html/
 ENV	ADMINER_VERSION 4.7.2
 ENV	ADMINER_DOWNLOAD_SHA256 187f7887c76fb6a39b08a34fad07df859672b2cbb6060d543206ca77136628a4
 ENV	ADMINER_SRC_DOWNLOAD_SHA256 b022a6e2655ab1c28df57e3d767129597b63c8eaaaab2cd9b7a23dc020797e46
+ENV ADMINER_PORT 8080
 
 RUN	set -x \
 &&	curl -fsSL https://github.com/vrana/adminer/releases/download/v$ADMINER_VERSION/adminer-$ADMINER_VERSION.php -o adminer.php \
@@ -43,6 +44,5 @@ COPY	entrypoint.sh /usr/local/bin/
 ENTRYPOINT	[ "entrypoint.sh", "docker-php-entrypoint" ]
 
 USER	adminer
-CMD	[ "php", "-S", "[::]:8080", "-t", "/var/www/html" ]
-
-EXPOSE 8080
+CMD ["sh", "-c", "php -S [::]:${ADMINER_PORT} -t /var/www/html"]
+EXPOSE $ADMINER_PORT
